@@ -4,7 +4,6 @@ from models import RFP
 from utils.document_processor import process_rfp
 from utils.notification import send_teams_notification
 from utils.azure_openai import generate_rfp_response
-import markdown
 
 bp = Blueprint('main', __name__)
 
@@ -72,9 +71,8 @@ def generate_response(rfp_id):
     rfp = RFP.query.get_or_404(rfp_id)
     try:
         response = generate_rfp_response(rfp.summary)
-        html_response = markdown.markdown(response)
         rfp.response = response
         db.session.commit()
-        return jsonify({"response": html_response}), 200
+        return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": f"Error generating response: {str(e)}"}), 500

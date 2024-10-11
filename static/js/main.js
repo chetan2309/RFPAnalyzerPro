@@ -84,8 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.response) {
-                    // Update this line to use innerHTML instead of textContent
-                    generatedResponse.innerHTML = data.response;
+                    generatedResponse.innerHTML = data.response.replace(/\n/g, '<br>');
                     responseSection.classList.remove('d-none');
                 } else if (data.error) {
                     alert(`Error: ${data.error}`);
