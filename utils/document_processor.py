@@ -12,12 +12,13 @@ def process_rfp(file):
         for page in pdf_reader.pages:
             text_content += page.extract_text()
 
-        # Generate summary using Azure OpenAI
+        # Generate summary using Azure Text Analytics
         summary = generate_summary(text_content)
 
-        # Extract dates using Azure OpenAI
+        # Extract dates using Azure Text Analytics
         dates = extract_dates(text_content)
-        
+        print("Extracted dates", dates)
+
         # Parse the most relevant date as the submission deadline
         submission_deadline = parse_submission_deadline(dates)
 

@@ -1,33 +1,26 @@
 import os
-from openai import AzureOpenAI
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
 
-# Initialize the Azure OpenAI client
-client = AzureOpenAI(
-    api_key=os.environ["AZURE_OPENAI_API_KEY"],
-    api_version="2023-05-15",
-    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
-)
+# Initialize the Azure Text Analytics client
+endpoint = os.environ["AZURE_OPENAI_ENDPOINT"]
+key = os.environ["AZURE_OPENAI_API_KEY"]
 
-deployment_name = os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"]
+text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
 
 def generate_summary(text):
-    response = client.chat.completions.create(
-        model=deployment_name,
-        messages=[
-            {"role": "system", "content": "You are an AI assistant that summarizes RFP documents."},
-            {"role": "user", "content": f"Please provide a one-page executive summary of the following RFP document:\n\n{text}"}
-        ],
-        max_tokens=500
-    )
-    return response.choices[0].message.content
+    try:
+        response = text_analytics_client.extractive_summarization(documents=[text])[0]
+        return " ".join([sentence.text for sentence in response.sentences])
+    except Exception as e:
+        print(f"Error generating summary: {str(e)}")
+        return "Unable to generate summary."
 
 def extract_dates(text):
-    response = client.chat.completions.create(
-        model=deployment_name,
-        messages=[
-            {"role": "system", "content": "You are an AI assistant that extracts important dates from RFP documents."},
-            {"role": "user", "content": f"Please extract all important dates related to submission deadlines from the following RFP document. Return the dates in ISO format (YYYY-MM-DD):\n\n{text}"}
-        ],
-        max_tokens=100
-    )
-    return response.choices[0].message.content
+    try:
+        response = text_analytics_client.recognize_entities(documents=[text])[0]
+        dates = [entity.text for entity in response.entities if entity.category == "DateTime"]
+        return "\n".join(dates)
+    except Exception as e:
+        print(f"Error extracting dates: {str(e)}")
+        return "Unable to extract dates."

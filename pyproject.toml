@@ -13,4 +13,11 @@ dependencies = [
     "pypdf2>=3.0.1",
     "dateparser>=1.2.0",
     "requests>=2.32.3",
+    "flask-markdown>=0.3",
+    "python-dateutil",
+    "markdown",
+    "markupsafe",
+    "azure-core>=1.31.0",
+    "azure-identity>=1.19.0",
+    "azure-ai-textanalytics>=5.3.0",
 ]

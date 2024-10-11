@@ -7,7 +7,7 @@
         <h2 class="card-title">{{ rfp.title }}</h2>
         <p><strong>Submission Deadline:</strong> {{ rfp.submission_deadline.strftime('%Y-%m-%d %H:%M:%S') }}</p>
         <h3>Executive Summary</h3>
-        <p>{{ rfp.summary }}</p>
+        {{ rfp.summary|markdown }}
     </div>
 </div>
 <a href="/" class="btn btn-primary mt-3">Back to Home</a>
