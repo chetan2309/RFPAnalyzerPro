@@ -3,6 +3,7 @@ from extensions import db
 from models import RFP
 from utils.document_processor import process_rfp
 from utils.notification import send_teams_notification
+from utils.azure_openai import generate_rfp_response
 
 bp = Blueprint('main', __name__)
 
@@ -64,3 +65,14 @@ def test_notification():
         return jsonify({"message": "Test notification sent successfully"}), 200
     except Exception as e:
         return jsonify({"error": f"Failed to send test notification: {str(e)}"}), 500
+
+@bp.route('/generate_response/<int:rfp_id>', methods=['POST'])
+def generate_response(rfp_id):
+    rfp = RFP.query.get_or_404(rfp_id)
+    try:
+        response = generate_rfp_response(rfp.summary)
+        rfp.response = response
+        db.session.commit()
+        return jsonify({"response": response}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error generating response: {str(e)}"}), 500

@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const rfpList = document.getElementById('rfpList');
     const errorMessage = document.createElement('div');
     errorMessage.className = 'alert alert-danger mt-3 d-none';
-    uploadForm.after(errorMessage);
+    if (uploadForm) {
+        uploadForm.after(errorMessage);
+    }
 
     if (uploadForm) {
         uploadForm.addEventListener('submit', function(e) {
@@ -63,5 +65,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (rfpList) {
         loadRFPs();
+    }
+
+    // New code for handling the Generate Response button
+    const generateResponseBtn = document.getElementById('generateResponseBtn');
+    const responseSection = document.getElementById('responseSection');
+    const generatedResponse = document.getElementById('generatedResponse');
+
+    if (generateResponseBtn) {
+        generateResponseBtn.addEventListener('click', function() {
+            const rfpId = this.getAttribute('data-rfp-id');
+            this.disabled = true;
+            this.textContent = 'Generating...';
+
+            fetch(`/generate_response/${rfpId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    generatedResponse.innerHTML = data.response.replace(/\n/g, '<br>');
+                    responseSection.classList.remove('d-none');
+                } else if (data.error) {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating the response. Please try again.');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.textContent = 'Generate Response';
+            });
+        });
     }
 });

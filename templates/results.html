@@ -2,13 +2,26 @@
 
 {% block content %}
 <h1 class="mb-4">RFP Analysis Results</h1>
-<div class="card">
+<div class="card mb-4">
     <div class="card-body">
         <h2 class="card-title">{{ rfp.title }}</h2>
         <p><strong>Submission Deadline:</strong> {{ rfp.submission_deadline.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-        <h3>Executive Summary</h3>
+        <h3>Summary</h3>
         {{ rfp.summary|markdown }}
+        <button id="generateResponseBtn" class="btn btn-primary mt-3" data-rfp-id="{{ rfp.id }}">Generate Response</button>
     </div>
 </div>
-<a href="/" class="btn btn-primary mt-3">Back to Home</a>
+
+<div id="responseSection" class="card mb-4 d-none">
+    <div class="card-body">
+        <h3>Generated Response</h3>
+        <div id="generatedResponse"></div>
+    </div>
+</div>
+
+<a href="/" class="btn btn-secondary">Back to Home</a>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

@@ -7,3 +7,4 @@ class RFP(db.Model):
     summary = db.Column(db.Text, nullable=False)
     submission_deadline = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    response = db.Column(db.Text)
