@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">RFP Analysis Tool</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Upload RFP Document</h5>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="mb-3">
+                <input type="file" class="form-control" id="rfpFile" name="file" accept=".pdf">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload and Analyze</button>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h2>Recent RFPs</h2>
+    <ul id="rfpList" class="list-group">
+        <!-- RFPs will be populated here -->
+    </ul>
+</div>
+{% endblock %}
