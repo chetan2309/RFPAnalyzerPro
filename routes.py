@@ -19,20 +19,29 @@ def upload_rfp():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
     
-    if file:
-        rfp_data = process_rfp(file)
-        new_rfp = RFP(
-            title=rfp_data['title'],
-            summary=rfp_data['summary'],
-            submission_deadline=rfp_data['submission_deadline']
-        )
-        db.session.add(new_rfp)
-        db.session.commit()
+    if file and file.filename.lower().endswith('.pdf'):
+        try:
+            rfp_data = process_rfp(file)
+            if rfp_data is None:
+                return jsonify({"error": "Failed to process the RFP file"}), 500
 
-        # Send notification to Teams
-        send_teams_notification(f"New RFP uploaded: {new_rfp.title}")
+            new_rfp = RFP(
+                title=rfp_data['title'],
+                summary=rfp_data['summary'],
+                submission_deadline=rfp_data['submission_deadline']
+            )
+            db.session.add(new_rfp)
+            db.session.commit()
 
-        return jsonify({"message": "RFP processed successfully", "id": new_rfp.id}), 200
+            # Send notification to Teams
+            send_teams_notification(f"New RFP uploaded: {new_rfp.title}")
+
+            return jsonify({"message": "RFP processed successfully", "id": new_rfp.id}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Error processing RFP: {str(e)}"}), 500
+    else:
+        return jsonify({"error": "Invalid file format. Please upload a PDF file."}), 400
 
 @bp.route('/results/<int:rfp_id>')
 def results(rfp_id):
