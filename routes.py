@@ -56,3 +56,11 @@ def list_rfps():
         "title": rfp.title,
         "submission_deadline": rfp.submission_deadline.isoformat()
     } for rfp in rfps])
+
+@bp.route('/test_notification')
+def test_notification():
+    try:
+        send_teams_notification("This is a test notification from the RFP Analysis Tool")
+        return jsonify({"message": "Test notification sent successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Failed to send test notification: {str(e)}"}), 500
