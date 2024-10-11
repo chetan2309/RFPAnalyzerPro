@@ -12,10 +12,10 @@ def process_rfp(file):
         for page in pdf_reader.pages:
             text_content += page.extract_text()
 
-        # Generate summary using Azure Text Analytics
+        # Generate summary using Azure OpenAI
         summary = generate_summary(text_content)
 
-        # Extract dates using Azure Text Analytics
+        # Extract dates using Azure OpenAI
         dates = extract_dates(text_content)
         print("Extracted dates", dates)
 

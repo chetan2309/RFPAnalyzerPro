@@ -1,0 +1,7 @@
+flask
+flask-sqlalchemy
+PyPDF2
+dateparser
+requests
+markdown
+openai
