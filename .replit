@@ -23,6 +23,18 @@ args = "Flask Server"
 task = "workflow.run"
 args = "RFP Analysis Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Alembic Init"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Alembic Migration"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Apply Alembic Migration"
+
 [[workflows.workflow]]
 name = "Start Flask Server"
 author = "agent"
@@ -58,6 +70,39 @@ agentRequireRestartOnSave = false
 task = "shell.exec"
 args = "python main.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Alembic Init"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "alembic init alembic"
+
+[[workflows.workflow]]
+name = "Alembic Migration"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "alembic revision --autogenerate -m 'Add response column to RFP table'"
+
+[[workflows.workflow]]
+name = "Apply Alembic Migration"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "alembic upgrade head"
 
 [deployment]
 run = ["sh", "-c", "python main.py"]

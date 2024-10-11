@@ -1,7 +1,8 @@
-from extensions import db
+from extensions import db, Base
 from datetime import datetime
 
-class RFP(db.Model):
+class RFP(Base):
+    __tablename__ = 'rfp'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     summary = db.Column(db.Text, nullable=False)
